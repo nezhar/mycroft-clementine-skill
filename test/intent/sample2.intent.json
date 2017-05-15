@@ -1,7 +1,7 @@
 {
-  "utterance": "amarok stop",
-  "intent_type": "AmarokStopKeywordIntent",
+  "utterance": "clementine stop",
+  "intent_type": "ClementineStopKeywordIntent",
   "intent": {
-    "AmarokStopKeyword": "music"
+    "ClementineStopKeyword": "music"
   }
 }

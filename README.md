@@ -1,5 +1,5 @@
-# mycroft-amarok-player-plasma-skill
-This skill integrates Amarok Music Player with Mycroft which enables users to Play Local Music.
+# mycroft-clementine-player-plasma-skill
+This skill integrates clementine Music Player with Mycroft which enables users to Play Local Music.
 
 #### Installation of skill:
 * Download or Clone Git

@@ -1,7 +1,7 @@
 {
-  "utterance": "amarok previous",
-  "intent_type": "AmarokPreviousKeywordIntent",
+  "utterance": "clementine previous",
+  "intent_type": "ClementinePreviousKeywordIntent",
   "intent": {
-    "AmarokPreviousKeyword": "song"
+    "ClementinePreviousKeyword": "song"
   }
 }

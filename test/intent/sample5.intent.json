@@ -1,7 +1,7 @@
 {
-  "utterance": "amarok pause",
-  "intent_type": "AmarokPauseKeywordIntent",
+  "utterance": "clementine pause",
+  "intent_type": "ClementinePauseKeywordIntent",
   "intent": {
-    "AmarokPauseKeyword": "song"
+    "ClementinePauseKeyword": "song"
   }
 }
