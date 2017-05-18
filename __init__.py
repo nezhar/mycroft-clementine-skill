@@ -10,7 +10,8 @@ from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
 import subprocess
 
-__author__ = 'aix'
+__author__ = 'hersche'
+
 
 LOGGER = getLogger(__name__)
 
@@ -24,7 +25,10 @@ class ClementineMusicPlayerSkill(MycroftSkill):
     # creates and registers each intent that the skill uses
     def initialize(self):
         self.load_data_files(dirname(__file__))
-
+        
+        # set the downer variable to your music-player is maybe enough for make it working
+        self.playerName="clementine"
+        
         internals_clementine_play_skill_intent = IntentBuilder("ClementinePlayKeywordIntent").\
             require("ClementinePlayKeyword").build()
         self.register_intent(internals_clementine_play_skill_intent, self.handle_internals_clementine_play_skill_intent)
@@ -60,7 +64,7 @@ class ClementineMusicPlayerSkill(MycroftSkill):
 
         for proc in psutil.process_iter():
             pinfo = proc.as_dict(attrs=['pid', 'name'])    
-            if pinfo['name'] == 'clementine':
+            if pinfo['name'] == self.playerName:
                 clementineRunning = True
     
         if clementineRunning:
@@ -69,7 +73,7 @@ class ClementineMusicPlayerSkill(MycroftSkill):
 
 	    def runplay():
        		 bus = dbus.SessionBus()
-        	 remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2")
+        	 remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2")
         	 remote_object.Play(dbus_interface = "org.mpris.MediaPlayer2.Player")	
 	    runplay()
         
@@ -77,29 +81,29 @@ class ClementineMusicPlayerSkill(MycroftSkill):
        	   def runprocandplay():
            	#cmdstring = "clementine %s %s %s" % ('-p' '-k' '0')
            	#os.system(cmdstring)
-           	subprocess.call(['clementine', '-p', '-k', '0'])
+           	subprocess.call([self.playerName])
            	bus = dbus.SessionBus()
-           	remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2")
+           	remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2")
            	remote_object.Play(dbus_interface = "org.mpris.MediaPlayer2.Player")
            runprocandplay()
    
     def handle_internals_clementine_stop_skill_intent(self, message):        
         bus = dbus.SessionBus()
-        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2") 
+        remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2") 
         remote_object.Stop(dbus_interface = "org.mpris.MediaPlayer2.Player")
         
         self.speak_dialog("clementine.stop")
     
     def handle_internals_clementine_next_skill_intent(self, message):
         bus = dbus.SessionBus()
-        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2") 
+        remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2") 
         remote_object.Next(dbus_interface = "org.mpris.MediaPlayer2.Player")
         
         self.speak_dialog("clementine.next")
         
     def handle_internals_clementine_jumpForward_skill_intent(self, message):
         bus = dbus.SessionBus()
-        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2")
+        remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2")
         properties_manager = dbus.Interface(remote_object, 'org.freedesktop.DBus.Properties')
         nrOfSongs = message.data.get("nrOfSongs")
         try:
@@ -115,7 +119,7 @@ class ClementineMusicPlayerSkill(MycroftSkill):
     
     def handle_internals_clementine_jumpBackward_skill_intent(self, message):
         bus = dbus.SessionBus()
-        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2")
+        remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2")
         properties_manager = dbus.Interface(remote_object, 'org.freedesktop.DBus.Properties')
         nrOfSongs = message.data.get("nrOfSongs")
         try:
@@ -131,9 +135,8 @@ class ClementineMusicPlayerSkill(MycroftSkill):
 
         
     def handle_internals_clementine_previous_skill_intent(self, message):
-        
         bus = dbus.SessionBus()
-        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2") 
+        remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2") 
         remote_object.Previous(dbus_interface = "org.mpris.MediaPlayer2.Player")
         
         self.speak_dialog("clementine.previous")     
@@ -141,7 +144,7 @@ class ClementineMusicPlayerSkill(MycroftSkill):
     def handle_internals_clementine_pause_skill_intent(self, message):
         
         bus = dbus.SessionBus()
-        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2") 
+        remote_object = bus.get_object("org.mpris.MediaPlayer2."+self.playerName,"/org/mpris/MediaPlayer2") 
         remote_object.Pause(dbus_interface = "org.mpris.MediaPlayer2.Player")
         
         self.speak_dialog("clementine.pause")     
