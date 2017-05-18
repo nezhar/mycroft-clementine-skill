@@ -28,7 +28,15 @@ class ClementineMusicPlayerSkill(MycroftSkill):
         internals_clementine_play_skill_intent = IntentBuilder("ClementinePlayKeywordIntent").\
             require("ClementinePlayKeyword").build()
         self.register_intent(internals_clementine_play_skill_intent, self.handle_internals_clementine_play_skill_intent)
-        
+
+        internals_clementine_jump_forward_skill_intent = IntentBuilder("ClementineJumpForwardKeywordIntent").\
+            require("ClementineJumpKeyword").require("nrOfSongs").require("ClementineJumpForwardKeyword").build()
+        self.register_intent(internals_clementine_jump_forward_skill_intent, self.handle_internals_clementine_jumpForward_skill_intent)
+
+        internals_clementine_jump_backward_skill_intent = IntentBuilder("ClementineJumpBackwardKeywordIntent").\
+            require("ClementineJumpKeyword").require("nrOfSongs").require("ClementineJumpBackwardKeyword").build()
+        self.register_intent(internals_clementine_jump_backward_skill_intent, self.handle_internals_clementine_jumpBackward_skill_intent)
+                
         internals_clementine_stop_skill_intent = IntentBuilder("ClementineStopKeywordIntent").\
             require("ClementineStopKeyword").build()
         self.register_intent(internals_clementine_stop_skill_intent, self.handle_internals_clementine_stop_skill_intent)
@@ -88,6 +96,39 @@ class ClementineMusicPlayerSkill(MycroftSkill):
         remote_object.Next(dbus_interface = "org.mpris.MediaPlayer2.Player")
         
         self.speak_dialog("clementine.next")
+        
+    def handle_internals_clementine_jumpForward_skill_intent(self, message):
+        bus = dbus.SessionBus()
+        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2")
+        properties_manager = dbus.Interface(remote_object, 'org.freedesktop.DBus.Properties')
+        nrOfSongs = message.data.get("nrOfSongs")
+        try:
+            parsedNrOfSongs = int(nrOfSongs)
+            i = 0;
+            while(parsedNrOfSongs>i):
+                if(properties_manager.Get('org.mpris.MediaPlayer2.Player', 'CanGoPrevious')):
+                    remote_object.Next(dbus_interface = "org.mpris.MediaPlayer2.Player")
+                    i+=1
+            self.speak("Jumped "+nrOfSongs+" songs forward")
+        except ValueError:
+            self.speak("sorry, was not able to parse the amount of songs i should go forward. Your wrong nr was: "+nrOfSongs)
+    
+    def handle_internals_clementine_jumpBackward_skill_intent(self, message):
+        bus = dbus.SessionBus()
+        remote_object = bus.get_object("org.mpris.MediaPlayer2.clementine","/org/mpris/MediaPlayer2")
+        properties_manager = dbus.Interface(remote_object, 'org.freedesktop.DBus.Properties')
+        nrOfSongs = message.data.get("nrOfSongs")
+        try:
+            parsedNrOfSongs = int(nrOfSongs)
+            i = 0;
+            while(parsedNrOfSongs>i):
+                if(properties_manager.Get('org.mpris.MediaPlayer2.Player', 'CanGoPrevious')):
+                    remote_object.Previous(dbus_interface = "org.mpris.MediaPlayer2.Player")
+                    i+=1
+            self.speak("Jumped "+nrOfSongs+" songs backward")
+        except ValueError:
+            self.speak("sorry, was not able to parse the amount of songs i should go backward. Your wrong nr was: "+nrOfSongs)
+
         
     def handle_internals_clementine_previous_skill_intent(self, message):
         
