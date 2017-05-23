@@ -1,1 +1,1 @@
-(go|jump|skip) (?P<nrOfSongs>\w+) (for work|songs for work|fort worth|songs fort worth|forward|songs forward|backward|songs backward|backwards|songs backwards|back|songs back)
+(go|jump|skip) (?P<nrOfSongs>\w+) (songs pack|pack|for work|songs for work|fort worth|songs fort worth|forward|songs forward|backward|songs backward|backwards|songs backwards|back|songs back)
